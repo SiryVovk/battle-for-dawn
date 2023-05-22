@@ -3,19 +3,43 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Tile
+public class Tile : MonoBehaviour
 {
-    [SerializeField] private string name;
-    [SerializeField] private GameObject prefab;
-    [SerializeField] private float tileYOffset;
+    [SerializeField] private float tileCost;
+    [SerializeField]private bool onTile;
+    private int xPos;
+    private int zPos;
+    private float yPos;
 
-    public float TileYOffset
+    private void Awake()
     {
-        get { return tileYOffset; }
+        xPos = (int)gameObject.transform.position.x;
+        zPos = (int)gameObject.transform.position.z;
+        yPos = gameObject.transform.position.y;
     }
-    public GameObject GetPrefab
+    public float TileCost
     {
-        get { return prefab; }
+        get { return tileCost; }
     }
 
+    public int XPos
+    {
+        get { return xPos; }
+    }
+
+    public int ZPos
+    {
+        get { return zPos; }
+    }
+
+    public float YPos
+    {
+        get { return yPos; }
+    }
+
+    public bool OnTile
+    {
+        get { return onTile; }
+        set { onTile = value; }
+    }
 }
