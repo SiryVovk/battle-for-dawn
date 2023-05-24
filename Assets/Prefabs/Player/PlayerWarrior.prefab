@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: -2925996257556591379}
   - component: {fileID: 4137787060686175158}
   - component: {fileID: 651586298823384640}
-  - component: {fileID: 2120007233}
   m_Layer: 0
   m_Name: PlayerWarrior
-  m_TagString: Untagged
+  m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -34,7 +33,7 @@ Transform:
   m_Children:
   - {fileID: 4992861653646354286}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-2925996257556591379
 MonoBehaviour:
@@ -51,6 +50,7 @@ MonoBehaviour:
   unitX: 0
   unitZ: 0
   unitActionPoints: 6
+  maxUnitActionPoints: 6
   map: {fileID: 0}
 --- !u!114 &4137787060686175158
 MonoBehaviour:
@@ -87,27 +87,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.000695, z: 1}
   m_Center: {x: 0, y: 1.0052491, z: 0}
---- !u!65 &2120007233
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4992861652630741251}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4992861653646354287
 GameObject:
   m_ObjectHideFlags: 0

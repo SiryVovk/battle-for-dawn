@@ -14,7 +14,7 @@ public class ClickableUnit : MonoBehaviour
     [SerializeField] private GameObject unitTileLight;
     [SerializeField] private GameObject moveUnitLight;
 
-    private Dictionary<Node, List<Node>> allPathes;
+    public Dictionary<Node, List<Node>> allPathes;
 
 
     private void Awake()
@@ -25,15 +25,26 @@ public class ClickableUnit : MonoBehaviour
 
     private void OnMouseUp()
     {
-        map.selectedUnit = this.gameObject;
-        map.unitComponent = unit;
-        ClearLightAndPathes();
-        Instantiate(unitTileLight, new Vector3(unit.UnitX, ADD_OFFSET, unit.UnitZ),Quaternion.Euler(new Vector3(90,0,0)));
-        allPathes = map.PathToTiles(unit.UnitX, unit.UnitZ);
-        LightTiles();
+        if (unit.UnitActive)
+        {
+            map.selectedUnit = this.gameObject;
+            map.unitComponent = unit;
+            ClearLightAndPathes();
+            allPathes = map.PathToTiles(unit.UnitX, unit.UnitZ);
+            if (allPathes.Count == 0)
+            {
+                unit.UnitActive = false;
+                this.gameObject.GetComponent<Collider>().enabled = false;
+            }
+            else
+            {
+                Instantiate(unitTileLight, new Vector3(unit.UnitX, map.map[unit.UnitX, unit.UnitZ].YPos + ADD_OFFSET, unit.UnitZ), Quaternion.Euler(new Vector3(90, 0, 0)));
+                LightTiles();
+            }
+        }
     }
 
-    private void ClearLightAndPathes()
+    public void ClearLightAndPathes()
     {
         if (allPathes != null)
             allPathes = null;

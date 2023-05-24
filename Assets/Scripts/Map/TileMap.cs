@@ -93,7 +93,7 @@ public class TileMap : MonoBehaviour
 
                 float minCost = score[current] + CostToTile(node);
 
-                if (minCost < unitComponent.UnitActionPoints && minCost < score[node])
+                if (minCost <= unitComponent.UnitActionPoints && minCost < score[node])
                 {
                     if (!toGo.Contains(node))
                         toGo.Add(node);

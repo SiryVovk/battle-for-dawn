@@ -7,8 +7,8 @@ public class Unit : MonoBehaviour
     [SerializeField] private int unitX;
     [SerializeField] private int unitZ;
     [SerializeField] private int unitActionPoints = 6;
-
-    public List<Node> currentPath = null;
+    [SerializeField] private int maxUnitActionPoints = 6;
+    private bool unitActive = true;
 
     public TileMap map;
 
@@ -27,6 +27,18 @@ public class Unit : MonoBehaviour
     public int UnitActionPoints
     {
         get { return unitActionPoints;}
+        set { unitActionPoints = value; }
+    }
+
+    public int MaxUnitActionPoints
+    {
+        get { return maxUnitActionPoints; }
+    }
+
+    public bool UnitActive
+    {
+        get { return unitActive; }
+        set { unitActive = value; }
     }
 
     private void Awake()
