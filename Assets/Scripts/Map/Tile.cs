@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour
 {
     [SerializeField] private float tileCost;
     [SerializeField]private bool onTile;
+    [SerializeField]private GameObject onTileObject;
     private int xPos;
     private int zPos;
     private float yPos;
@@ -41,5 +42,11 @@ public class Tile : MonoBehaviour
     {
         get { return onTile; }
         set { onTile = value; }
+    }
+
+    public GameObject OnTileObject
+    {
+        get { return onTileObject; }
+        set { onTileObject = value; }
     }
 }

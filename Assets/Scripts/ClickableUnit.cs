@@ -13,6 +13,7 @@ public class ClickableUnit : MonoBehaviour
 
     [SerializeField] private GameObject unitTileLight;
     [SerializeField] private GameObject moveUnitLight;
+    [SerializeField] private GameObject attackUnitLight;
 
     public Dictionary<Node, List<Node>> allPathes;
 
@@ -23,23 +24,20 @@ public class ClickableUnit : MonoBehaviour
         map = GameObject.FindGameObjectWithTag("Map").GetComponent<TileMap>();
     }
 
-    private void OnMouseUp()
+    public void OnMouseUp()
     {
-        if (unit.UnitActive)
+        map.selectedUnit = this.gameObject;
+        map.unitComponent = unit;
+        ClearLightAndPathes();
+        allPathes = map.AllPathes(unit.UnitX, unit.UnitZ);
+        Instantiate(unitTileLight, new Vector3(unit.UnitX, map.map[unit.UnitX, unit.UnitZ].YPos + ADD_OFFSET, unit.UnitZ), Quaternion.Euler(new Vector3(90, 0, 0)));
+        LightTiles();
+
+        foreach (Node node in map.graph[unit.UnitX,unit.UnitZ].edges)
         {
-            map.selectedUnit = this.gameObject;
-            map.unitComponent = unit;
-            ClearLightAndPathes();
-            allPathes = map.PathToTiles(unit.UnitX, unit.UnitZ);
-            if (allPathes.Count == 0)
+            if (map.map[node.xPos, node.zPos].OnTile && map.map[node.xPos, node.zPos].OnTileObject.tag == "Enemy")
             {
-                unit.UnitActive = false;
-                this.gameObject.GetComponent<Collider>().enabled = false;
-            }
-            else
-            {
-                Instantiate(unitTileLight, new Vector3(unit.UnitX, map.map[unit.UnitX, unit.UnitZ].YPos + ADD_OFFSET, unit.UnitZ), Quaternion.Euler(new Vector3(90, 0, 0)));
-                LightTiles();
+                Instantiate(attackUnitLight, new Vector3(node.xPos, map.map[node.xPos, node.zPos].YPos + ADD_OFFSET, node.zPos), Quaternion.Euler(new Vector3(90, 0, 0)));
             }
         }
     }
@@ -60,11 +58,12 @@ public class ClickableUnit : MonoBehaviour
     {
         foreach(Node node in allPathes.Keys)
         {
-            if (map.map[node.xPos, node.zPos].OnTile)
+            if (map.map[node.xPos, node.zPos].OnTile && map.map[node.xPos, node.zPos].OnTileObject.tag != "Enemy")
             {
                 Instantiate(unitTileLight, new Vector3(node.xPos, map.map[node.xPos, node.zPos].YPos + ADD_OFFSET, node.zPos), Quaternion.Euler(new Vector3(90, 0, 0)));
+
             }
-            else
+            else if(!map.map[node.xPos, node.zPos].OnTile)
             {
                 Instantiate(moveUnitLight, new Vector3(node.xPos, map.map[node.xPos, node.zPos].YPos + ADD_OFFSET, node.zPos), Quaternion.Euler(new Vector3(90, 0, 0)));
             }

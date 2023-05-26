@@ -8,9 +8,10 @@ public class Unit : MonoBehaviour
     [SerializeField] private int unitZ;
     [SerializeField] private int unitActionPoints = 6;
     [SerializeField] private int maxUnitActionPoints = 6;
-    private bool unitActive = true;
-
-    public TileMap map;
+    [SerializeField] private int attackPower = 5;
+    [SerializeField] private int attackActionPoints = 2;
+    [SerializeField] private int health = 10;
+    [SerializeField] private int attackRange = 1;
 
     public int UnitX
     {
@@ -26,7 +27,7 @@ public class Unit : MonoBehaviour
 
     public int UnitActionPoints
     {
-        get { return unitActionPoints;}
+        get { return unitActionPoints; }
         set { unitActionPoints = value; }
     }
 
@@ -35,10 +36,20 @@ public class Unit : MonoBehaviour
         get { return maxUnitActionPoints; }
     }
 
-    public bool UnitActive
+    public int AttackPower
     {
-        get { return unitActive; }
-        set { unitActive = value; }
+        get { return attackPower; }
+    }
+
+    public int AttackActionPoints
+    {
+        get { return attackActionPoints; }
+    }
+
+    public int Health
+    {
+        get { return health; }
+        set { health = value; }
     }
 
     private void Awake()

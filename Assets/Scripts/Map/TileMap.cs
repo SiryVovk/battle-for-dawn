@@ -10,7 +10,7 @@ using UnityEngine;
 public class TileMap : MonoBehaviour
 {
     public Tile[,] map;
-    private Node[,] graph;
+    public Node[,] graph;
 
     [SerializeField]private int xLength;
     [SerializeField]private int zLength;
@@ -64,7 +64,7 @@ public class TileMap : MonoBehaviour
         }
     }
 
-    public Dictionary<Node, List<Node>> PathToTiles(int x, int z)
+    public Dictionary<Node, List<Node>> AllPathes(int x, int z)
     {
         Dictionary<Node, float> score = new Dictionary<Node, float>();
         Dictionary<Node, Node> prev = new Dictionary<Node, Node>();
@@ -84,21 +84,24 @@ public class TileMap : MonoBehaviour
 
             foreach(Node node in current.edges)
             {
-                if (!score.ContainsKey(node))
+                if (!map[node.xPos, node.zPos].OnTile)
                 {
-                    score[node] = Mathf.Infinity;
-                    toCheck.Add(node);
-                    prev[node] = null;
-                }
+                    if (!score.ContainsKey(node))
+                    {
+                        score[node] = Mathf.Infinity;
+                        toCheck.Add(node);
+                        prev[node] = null;
+                    }
 
-                float minCost = score[current] + CostToTile(node);
+                    float minCost = score[current] + CostToTile(node);
 
-                if (minCost <= unitComponent.UnitActionPoints && minCost < score[node])
-                {
-                    if (!toGo.Contains(node))
-                        toGo.Add(node);
-                    score[node] = minCost;
-                    prev[node] = current;
+                    if (minCost <= unitComponent.UnitActionPoints && minCost < score[node])
+                    {
+                        if (!toGo.Contains(node))
+                            toGo.Add(node);
+                        score[node] = minCost;
+                        prev[node] = current;
+                    }
                 }
             }
         }
@@ -111,7 +114,7 @@ public class TileMap : MonoBehaviour
 
         return result;
     }
-   
+
     private Node NodeWithLowestScore(HashSet<Node> toCheck, Dictionary<Node, float> score)
     {
         Node lowestNode = null;
@@ -151,5 +154,6 @@ public class TileMap : MonoBehaviour
     {
         return new Vector3(x , map[x,z].YPos, z);
     }
+
 }
 

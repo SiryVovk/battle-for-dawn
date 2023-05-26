@@ -97,6 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661c04a91a5b1324d83150c2040c15ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  line: {fileID: 1253377860516327401, guid: ae6b873083c3dd64189fe2533c3d5d17, type: 3}
+  attackLightPrefab: {fileID: 9175778863680669622, guid: aec369333bc3cd44ca768830a1ead4df, type: 3}
 --- !u!65 &1717739838621022292
 BoxCollider:
   m_ObjectHideFlags: 0

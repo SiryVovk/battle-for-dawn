@@ -6,7 +6,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    List<Unit> allPlayerUnits = new List<Unit>(); 
+    private List<Unit> allPlayerUnits = new List<Unit>();
+    private List<Enemy> allEnemys = new List<Enemy>();
+    private int turnNumber = 1;
 
     private void Awake()
     {
@@ -23,8 +25,9 @@ public class GameManager : MonoBehaviour
         foreach (Unit unit in allPlayerUnits)
         {
             unit.UnitActionPoints = unit.MaxUnitActionPoints;
-            unit.gameObject.GetComponent<Collider>().enabled = true;
-            unit.UnitActive = true;
         }
+
+        turnNumber++;
     }
+
 }

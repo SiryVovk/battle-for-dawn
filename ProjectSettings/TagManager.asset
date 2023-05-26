@@ -9,6 +9,7 @@ TagManager:
   - LightTiles
   - Unit
   - FirePlace
+  - Enemy
   layers:
   - Default
   - TransparentFX
