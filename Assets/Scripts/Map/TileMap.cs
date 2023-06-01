@@ -24,6 +24,16 @@ public class TileMap : MonoBehaviour
         GenerateGraphForPathFinding();
     }
 
+    private void OnEnable()
+    {
+        Enemy.enemyDie += EnemyDie;
+    }
+
+    private void OnDesble()
+    {
+        Enemy.enemyDie -= EnemyDie;
+    }
+
     private void ReadMap()
     {
         map = new Tile[xLength, zLength];
@@ -109,12 +119,67 @@ public class TileMap : MonoBehaviour
         Dictionary<Node, List<Node>> result = new Dictionary<Node, List<Node>>();
         foreach(Node node in toGo)
         {
-            ReconstructPath(prev, node, result);
+            result[node] = ReconstructPath(prev, node);
         }
 
         return result;
     }
 
+    public List<Node> AStarPath(int x, int z, Tile goal)
+    {
+        HashSet<Node> openSet = new HashSet<Node>();
+        HashSet<Node> closeSet = new HashSet<Node>();
+        Dictionary<Node, Node> prev = new Dictionary<Node, Node>();
+        Dictionary<Node, float> gScore = new Dictionary<Node, float>();
+        Dictionary<Node, float> fScore = new Dictionary<Node, float>();
+
+        Node start = graph[x, z];
+        Node end = graph[goal.XPos, goal.ZPos];
+
+        openSet.Add(start);
+        gScore[start] = 0;
+        fScore[start] = Heuristic(start, end);
+
+        while (openSet.Count != 0)
+        {
+            Node current = NodeWithLowestScore(openSet, fScore);
+
+            if (current == end)
+                return ReconstructPath(prev, current);
+
+            openSet.Remove(current);
+            closeSet.Add(current);
+
+            foreach(Node node in current.edges)
+            {
+                if (closeSet.Contains(node) || map[node.xPos, node.zPos].OnTile)
+                    continue;
+
+                float tentativeGScore = gScore[current] + CostToTile(node);
+
+                if(tentativeGScore < GetGScore(gScore,node))
+                {
+                    prev[node] = current;
+                    gScore[node] = tentativeGScore;
+                    fScore[node] = gScore[node] + Heuristic(node, end);
+
+                    if (!openSet.Contains(node))
+                        openSet.Add(node);
+                }
+
+            }
+        }
+
+        return new List<Node>();
+
+    }
+
+    private float Heuristic(Node start, Node goal)
+    {
+        float xDistToMake = Math.Abs(goal.xPos - start.xPos);
+        float zDistToMake = Math.Abs(goal.zPos - start.zPos);
+        return xDistToMake + zDistToMake;
+    }
     private Node NodeWithLowestScore(HashSet<Node> toCheck, Dictionary<Node, float> score)
     {
         Node lowestNode = null;
@@ -131,7 +196,16 @@ public class TileMap : MonoBehaviour
         return lowestNode;
     }
 
-    private void ReconstructPath(Dictionary<Node,Node> parent,Node current, Dictionary<Node, List<Node>> allPathes)
+    private float GetGScore(Dictionary<Node,float> gScore, Node node)
+    {
+        if (gScore.ContainsKey(node))
+            return gScore[node];
+
+        gScore[node] = Mathf.Infinity;
+        return Mathf.Infinity;
+    }
+
+    private List<Node> ReconstructPath(Dictionary<Node,Node> parent,Node current)
     {
         List<Node> path = new List<Node>() { current };
         Node lastNode = current;
@@ -142,7 +216,7 @@ public class TileMap : MonoBehaviour
         }
 
         path.Reverse();
-        allPathes[lastNode] = path;
+        return path;
     }    
 
     public float CostToTile(Node neighborn)
@@ -153,6 +227,12 @@ public class TileMap : MonoBehaviour
     public Vector3 TileCordToWorldCord(int x, int z)
     {
         return new Vector3(x , map[x,z].YPos, z);
+    }
+
+    private void EnemyDie(Enemy enemy)
+    {
+        map[enemy.EnemyX, enemy.EnemyZ].OnTile = false;
+        map[enemy.EnemyX, enemy.EnemyZ].OnTileObject = null;
     }
 
 }

@@ -233,7 +233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8172735501081386752, guid: ae6b873083c3dd64189fe2533c3d5d17, type: 3}
       propertyPath: m_Positions.Array.size
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8172735501081386752, guid: ae6b873083c3dd64189fe2533c3d5d17, type: 3}
       propertyPath: m_Positions.Array.data[0].y

@@ -38,7 +38,11 @@ public class Unit : MonoBehaviour
 
     public int AttackPower
     {
-        get { return attackPower; }
+        get 
+        {
+            unitActionPoints -= attackActionPoints;
+            return attackPower; 
+        }
     }
 
     public int AttackActionPoints

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7410107700082969047}
   - component: {fileID: 7410107700082969040}
+  - component: {fileID: 1960427539}
   m_Layer: 0
   m_Name: FirePlace
   m_TagString: FirePlace
@@ -32,7 +33,7 @@ Transform:
   - {fileID: 7016402388869419620}
   - {fileID: 7410107698655145510}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &7410107700082969040
 BoxCollider:
@@ -55,6 +56,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1960427539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7410107700082969041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9013a511820f5c4aa5c105ce609316a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7252297765426458324
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -63,6 +76,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7410107700082969047}
     m_Modifications:
+    - target: {fileID: 175829319264260261, guid: 1b169b7cd2dab3e42aaf3d25ecc5ce87, type: 3}
+      propertyPath: UVModule.frameOverTime.scalar
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 175829319805845746, guid: 1b169b7cd2dab3e42aaf3d25ecc5ce87, type: 3}
       propertyPath: m_RootOrder
       value: -1
@@ -151,7 +168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c89f687435ca94f428bc2515dfd55db2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.745
+      value: 0.64
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c89f687435ca94f428bc2515dfd55db2, type: 3}
       propertyPath: m_LocalPosition.z

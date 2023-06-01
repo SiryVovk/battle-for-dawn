@@ -30,14 +30,17 @@ public class ClickableUnit : MonoBehaviour
         map.unitComponent = unit;
         ClearLightAndPathes();
         allPathes = map.AllPathes(unit.UnitX, unit.UnitZ);
-        Instantiate(unitTileLight, new Vector3(unit.UnitX, map.map[unit.UnitX, unit.UnitZ].YPos + ADD_OFFSET, unit.UnitZ), Quaternion.Euler(new Vector3(90, 0, 0)));
+        Instantiate(unitTileLight, new Vector3(unit.UnitX, map.map[unit.UnitX, unit.UnitZ].YPos + ADD_OFFSET, unit.UnitZ), Quaternion.Euler(new Vector3(90, 0, 0)),this.transform);
         LightTiles();
 
-        foreach (Node node in map.graph[unit.UnitX,unit.UnitZ].edges)
+        if (unit.UnitActionPoints >= unit.AttackActionPoints)
         {
-            if (map.map[node.xPos, node.zPos].OnTile && map.map[node.xPos, node.zPos].OnTileObject.tag == "Enemy")
+            foreach (Node node in map.graph[unit.UnitX, unit.UnitZ].edges)
             {
-                Instantiate(attackUnitLight, new Vector3(node.xPos, map.map[node.xPos, node.zPos].YPos + ADD_OFFSET, node.zPos), Quaternion.Euler(new Vector3(90, 0, 0)));
+                if (map.map[node.xPos, node.zPos].OnTile && map.map[node.xPos, node.zPos].OnTileObject.tag == "Enemy")
+                {
+                    Instantiate(attackUnitLight, new Vector3(node.xPos, map.map[node.xPos, node.zPos].YPos + ADD_OFFSET, node.zPos), Quaternion.Euler(new Vector3(90, 0, 0)), this.transform);
+                }
             }
         }
     }
