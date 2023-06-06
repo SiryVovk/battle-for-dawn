@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Unit : MonoBehaviour
@@ -12,6 +10,8 @@ public class Unit : MonoBehaviour
     [SerializeField] private int attackActionPoints = 2;
     [SerializeField] private int health = 10;
     [SerializeField] private int attackRange = 1;
+
+    private float unitSpeed = 0.1f;
 
     public int UnitX
     {
@@ -50,16 +50,24 @@ public class Unit : MonoBehaviour
         get { return attackActionPoints; }
     }
 
-    public int Health
+    public int AttackRange
     {
-        get { return health; }
-        set { health = value; }
+        get { return attackRange; }
     }
 
+    public float UnitSpeed
+    {
+        get { return unitSpeed; }
+    }
     private void Awake()
     {
         unitX = (int)this.gameObject.transform.position.x;
         unitZ = (int)this.gameObject.transform.position.z;
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
     }
 
 }

@@ -1,10 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.iOS.Xcode;
 using UnityEngine;
 
 public class TileMap : MonoBehaviour
@@ -29,7 +24,7 @@ public class TileMap : MonoBehaviour
         Enemy.enemyDie += EnemyDie;
     }
 
-    private void OnDesble()
+    private void OnDisable()
     {
         Enemy.enemyDie -= EnemyDie;
     }
@@ -152,7 +147,7 @@ public class TileMap : MonoBehaviour
 
             foreach(Node node in current.edges)
             {
-                if (closeSet.Contains(node) || map[node.xPos, node.zPos].OnTile)
+                if (closeSet.Contains(node) || (map[node.xPos, node.zPos].OnTile && map[node.xPos,node.zPos] != goal))
                     continue;
 
                 float tentativeGScore = gScore[current] + CostToTile(node);

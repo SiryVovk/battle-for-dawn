@@ -1,36 +1,40 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Serialization;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     private HashSet<Unit> allPlayerUnits = new HashSet<Unit>();
     private HashSet<Enemy> allEnemys = new HashSet<Enemy>();
-    private FirePlace firePlace;
     private List<GameObject> allPlayersObject = new List<GameObject>();
 
     private TileMap tileMap;
     private Tile[] bordersOfMap;
+
+    [SerializeField] private GameObject gameCanvas;
+    [SerializeField] private GameObject endCanvas;
+
+    [SerializeField] private TextMeshProUGUI turns;
 
     [SerializeField]private List<GameObject> enemysPref;
 
     private int turnNumber = 0;
     private int spawnRate = 1;
     private int spawnTurns = 3;
+    private bool isGameOver = false;
 
     private void OnEnable()
     {
         Enemy.enemyDie += EnemyDie;
+        FirePlace.firePlaceDie += GameOver;
     }
 
     private void OnDisable()
     {
         Enemy.enemyDie -= EnemyDie;
+        FirePlace.firePlaceDie -= GameOver;
     }
+
     private void Start()
     {
         tileMap = GameObject.FindGameObjectWithTag("Map").GetComponent<TileMap>();
@@ -48,29 +52,37 @@ public class GameManager : MonoBehaviour
         }
 
         GameObject fire = GameObject.FindGameObjectWithTag("FirePlace");
-        firePlace = fire.GetComponent<FirePlace>();
         allPlayersObject.Add(fire);
     }
 
     public void EndTurn()
     {
         foreach (Unit unit in allPlayerUnits)
+        {
             unit.UnitActionPoints = unit.MaxUnitActionPoints;
-
-        foreach (Enemy enemy in allEnemys)
-        {
-
-            enemy.ActionPoints = enemy.MaxEnemyActionPoints;
-            FindClosestEnemyGoal(enemy);
+            unit.gameObject.GetComponent<ClickableUnit>().ClearLightAndPath();
         }
 
-        turnNumber++;
+        ClearLights();
+        tileMap.selectedUnit = null;
 
-        if(turnNumber % spawnTurns == 0)
+        if (!isGameOver)
         {
-            SpawnEnemys();
-        }
+            foreach (Enemy enemy in allEnemys)
+            {
+                enemy.ActionPoints = enemy.MaxEnemyActionPoints;
+                FindClosestEnemyGoal(enemy);
+                enemy.MakeMove(tileMap);
+            }
 
+            turnNumber++;
+            turns.text = turnNumber.ToString();
+
+            if (turnNumber % spawnTurns == 0)
+            {
+                SpawnEnemys();
+            }
+        }
     }
 
     private void FillBordersArray()
@@ -109,7 +121,6 @@ public class GameManager : MonoBehaviour
             }
         }
         
-        Debug.Log("Error");
         return new Vector3();
     }
 
@@ -135,6 +146,16 @@ public class GameManager : MonoBehaviour
         return numbers;
     }
 
+    private void ClearLights()
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("LightTiles");
+
+        for (int i = 0; i < objects.Length; i++)
+        {
+            Destroy(objects[i]);
+        }
+    }
+
     private void FindClosestEnemyGoal(Enemy enemy)
     {
         float minDistance = Mathf.Infinity;
@@ -146,7 +167,7 @@ public class GameManager : MonoBehaviour
                 if(minDistance > dist)
                 {
                     minDistance = dist;
-                    enemy.targetObject = unit;
+                    enemy.targetObject = tileMap.map[(int)unit.transform.position.x, (int)unit.transform.position.z];
                 }
             }
         }
@@ -178,5 +199,19 @@ public class GameManager : MonoBehaviour
     private void EnemyDie(Enemy enemy)
     {
         allEnemys.Remove(enemy);
+    }
+
+    private void GameOver()
+    {
+        isGameOver = true;
+       foreach(GameObject playerUnit in allPlayersObject)
+       {
+            playerUnit.GetComponent<Collider>().enabled = false;
+       }
+
+        gameCanvas.active = false;
+        endCanvas.active = true;
+
+        endCanvas.GetComponent<EndScreen>().SetScore(turnNumber);
     }
 }

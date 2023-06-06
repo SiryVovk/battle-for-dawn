@@ -1,13 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class FirePlace : MonoBehaviour
 {
-    private int health = 100;
+    [SerializeField]private int health = 100;
     private int xPos;
     private int zPos;
 
+    public static Action firePlaceDie;
     private int XPos
     {
         get { return xPos; }
@@ -27,5 +27,10 @@ public class FirePlace : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        if(health <= 0)
+        {
+            Destroy(this.gameObject);
+            firePlaceDie.Invoke();
+        }
     }
 }

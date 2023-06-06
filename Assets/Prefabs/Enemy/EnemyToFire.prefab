@@ -45,13 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e796e133f08033449696e042a1d2e19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyX: 0
-  enemyZ: 0
-  maxEnemyActionPoints: 6
-  attackPower: 2
-  attackCost: 2
-  health: 10
-  attackRange: 1
+  targetObject: {fileID: 0}
+  toLoockFor:
+  - {fileID: 7410107700082969041, guid: d66b0a854f702194daa03947822100c4, type: 3}
 --- !u!1 &8109920150877567155
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class MoveToUnit : MonoBehaviour
@@ -9,7 +8,7 @@ public class MoveToUnit : MonoBehaviour
 
     [SerializeField] private GameObject line;
 
-    private TileMap map;
+    private TileMap tileMap;
     private GameObject unit;
     private Unit unitComponent;
     private ClickableUnit click;
@@ -21,8 +20,8 @@ public class MoveToUnit : MonoBehaviour
 
     private void Awake()
     {
-        map = GameObject.FindGameObjectWithTag("Map").GetComponent<TileMap>();
-        unit = map.selectedUnit;
+        tileMap = GameObject.FindGameObjectWithTag("Map").GetComponent<TileMap>();
+        unit = tileMap.selectedUnit;
         unitComponent = unit.GetComponent<Unit>();
         click = unit.GetComponent<ClickableUnit>();
         lineRenderer = line.GetComponent<LineRenderer>();
@@ -30,24 +29,24 @@ public class MoveToUnit : MonoBehaviour
 
     private void OnMouseDown()
     {
+        ClearObjects();
         Node lastNode = FindNode((int)transform.position.x, (int)transform.position.z);
         List<Node> path = click.allPathes[lastNode];
         Node firstNode = path[0];
+        Tile[,] map = tileMap.map;
 
         unitComponent.UnitActionPoints -= CostToLastTile(path, firstNode);
 
-        map.map[firstNode.xPos, firstNode.zPos].OnTile = false;
-        map.map[lastNode.xPos, lastNode.zPos].OnTile = true;
+        map[firstNode.xPos, firstNode.zPos].OnTile = false;
+        map[lastNode.xPos, lastNode.zPos].OnTile = true;
 
-        map.map[firstNode.xPos, firstNode.zPos].OnTileObject = null;
-        map.map[lastNode.xPos, lastNode.zPos].OnTileObject = unit;
-
-        unit.transform.position = new Vector3(lastNode.xPos, map.map[lastNode.xPos, lastNode.zPos].YPos, lastNode.zPos);
+        map[firstNode.xPos, firstNode.zPos].OnTileObject = null;
+        map[lastNode.xPos, lastNode.zPos].OnTileObject = unit;
         unitComponent.UnitX = lastNode.xPos;
         unitComponent.UnitZ = lastNode.zPos;
-        click.ClearLightAndPathes();
-        ClearObjects();
-        click.OnMouseUp();
+
+        EnableTile();
+        StartCoroutine(MoveToLastTile(path, map));
     }
 
     private void OnMouseEnter()
@@ -55,14 +54,15 @@ public class MoveToUnit : MonoBehaviour
         Node lastNode = FindNode((int)transform.position.x, (int)transform.position.z);
         List<Node> path = click.allPathes[lastNode];
         Node firstNode = path[0];
+        Tile[,] map = tileMap.map;
 
         if (CostToLastTile(path, firstNode) <= unitComponent.UnitActionPoints + unitComponent.AttackActionPoints)
         {
             foreach(Node node in lastNode.edges)
             {
-                if (map.map[node.xPos, node.zPos].OnTile && map.map[node.xPos, node.zPos].OnTileObject.tag == "Enemy")
+                if (map[node.xPos, node.zPos].OnTile && map[node.xPos, node.zPos].OnTileObject.tag == "Enemy")
                 {
-                    createdObjects.Add(Instantiate(attackLightPrefab, new Vector3(node.xPos, map.map[node.xPos, node.zPos].YPos + ADD_OFFSET, node.zPos), Quaternion.Euler(new Vector3(90, 0, 0))));
+                    createdObjects.Add(Instantiate(attackLightPrefab, new Vector3(node.xPos, map[node.xPos, node.zPos].YPos + ADD_OFFSET, node.zPos), Quaternion.Euler(new Vector3(90, 0, 0))));
                 }
             }
         }
@@ -71,7 +71,7 @@ public class MoveToUnit : MonoBehaviour
 
         for(int i = 0; i < points.Length;i++)
         {
-            float yPos = map.map[path[i].xPos, path[i].zPos].YPos;
+            float yPos = map[path[i].xPos, path[i].zPos].YPos;
             points[i] = new Vector3(path[i].xPos, yPos, path[i].zPos);
         }
 
@@ -96,6 +96,20 @@ public class MoveToUnit : MonoBehaviour
         createdObjects = new List<GameObject>();
     }
 
+    private void EnableTile()
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("LightTiles");
+
+        foreach(GameObject obj in objects) 
+        {
+            Collider col;
+            obj.TryGetComponent<Collider>(out col);
+            if(col != null)
+                col.enabled = false;
+            obj.GetComponent<MeshRenderer>().enabled = false;
+        }
+    }
+
     private Node FindNode(int xPos, int zPos)
     {
         foreach (Node key in click.allPathes.Keys)
@@ -115,9 +129,35 @@ public class MoveToUnit : MonoBehaviour
         foreach (Node key in path)
         {
             if (key != firstNode)
-                cost += (int)map.map[key.xPos, key.zPos].TileCost;
+                cost += (int)tileMap.map[key.xPos, key.zPos].TileCost;
         }
 
         return cost;
+    }
+
+    private IEnumerator MoveToLastTile(List<Node> path, Tile[,] map)
+    {
+        Node current = path[0];
+        Vector3 startPoint = new Vector3(current.xPos, map[current.xPos, current.zPos].YPos, current.zPos);
+        Vector3 endPoint;
+        for (int i = 1; i < path.Count; i++)
+        {
+            current = path[i];
+            endPoint = new Vector3(current.xPos, map[current.xPos, current.zPos].YPos, current.zPos);
+            float elapsedTime = 0f;
+            while (elapsedTime < unitComponent.UnitSpeed)
+            {
+                unit.transform.position = Vector3.Lerp(startPoint, endPoint, unitComponent.UnitSpeed / elapsedTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            unit.transform.position = endPoint;
+            yield return null;
+            startPoint = endPoint;
+        }
+
+        unit.transform.position = startPoint;
+        click.ClearLightAndPath();
+        click.OnMouseUp();
     }
 }
