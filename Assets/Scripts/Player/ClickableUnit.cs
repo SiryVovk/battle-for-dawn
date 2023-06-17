@@ -14,7 +14,7 @@ public class ClickableUnit : MonoBehaviour
 
     public Dictionary<Node, List<Node>> allPathes;
 
-    private void Awake()
+    private void Start()
     {
         unit = this.gameObject.GetComponent<Unit>();
         tileMap = GameObject.FindGameObjectWithTag("Map").GetComponent<TileMap>();
@@ -76,11 +76,11 @@ public class ClickableUnit : MonoBehaviour
             string targetTag = "Enemy";
             if (unitX + distanceCheck < xLength && map[unitX + distanceCheck, unitZ].OnTile && map[unitX + distanceCheck, unitZ].OnTileObject.tag == targetTag)
                 Instantiate(attackUnitLight, new Vector3(unitX + distanceCheck, map[unitX + distanceCheck, unitZ].YPos + ADD_OFFSET, unit.UnitZ), Quaternion.Euler(new Vector3(90, 0, 0)), this.transform);
-            if (unitX - distanceCheck > 0 && map[unitX - distanceCheck, unitZ].OnTile && map[unitX - distanceCheck, unitZ].OnTileObject.tag == targetTag)
+            if (unitX - distanceCheck >= 0 && map[unitX - distanceCheck, unitZ].OnTile && map[unitX - distanceCheck, unitZ].OnTileObject.tag == targetTag)
                 Instantiate(attackUnitLight, new Vector3(unitX - distanceCheck, map[unitX - distanceCheck, unitZ].YPos + ADD_OFFSET, unit.UnitZ), Quaternion.Euler(new Vector3(90, 0, 0)), this.transform);
             if (unitZ + distanceCheck < zLength && map[unitX, unitZ + distanceCheck].OnTile && map[unitX, unitZ + distanceCheck].OnTileObject.tag == targetTag)
                 Instantiate(attackUnitLight, new Vector3(unitX, map[unitX, unitZ + distanceCheck].YPos + ADD_OFFSET, unit.UnitZ + distanceCheck), Quaternion.Euler(new Vector3(90, 0, 0)), this.transform);
-            if (unitZ - distanceCheck > 0 && map[unitX, unitZ - distanceCheck].OnTile && map[unitX, unitZ - distanceCheck].OnTileObject.tag == targetTag)
+            if (unitZ - distanceCheck >= 0 && map[unitX, unitZ - distanceCheck].OnTile && map[unitX, unitZ - distanceCheck].OnTileObject.tag == targetTag)
                 Instantiate(attackUnitLight, new Vector3(unitX, map[unitX, unitZ - distanceCheck].YPos + ADD_OFFSET, unit.UnitZ - distanceCheck), Quaternion.Euler(new Vector3(90, 0, 0)), this.transform);
             distanceCheck++;
         }

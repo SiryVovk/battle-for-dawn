@@ -32,11 +32,10 @@ public class TileMap : MonoBehaviour
     private void ReadMap()
     {
         map = new Tile[xLength, zLength];
-        GameObject[] tilesInScene = GameObject.FindGameObjectsWithTag("Tile");
+        Tile[] tiles = this.gameObject.transform.GetComponentsInChildren<Tile>();
 
-        foreach (GameObject gameObject in tilesInScene)
+        foreach(Tile tile in tiles)
         {
-            Tile tile = gameObject.GetComponent<Tile>();
             map[tile.XPos, tile.ZPos] = tile;
         }
     }

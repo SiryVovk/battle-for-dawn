@@ -13,13 +13,14 @@ public class EndScreen : MonoBehaviour
 
     public void Restart()
     {
-        this.gameObject.active = false;
+        this.gameObject.SetActive(false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void MainMenu()
     {
-        this.gameObject.active = false;
+        Destroy(GameObject.FindGameObjectWithTag("Audio"));
+        this.gameObject.SetActive(false);
         SceneManager.LoadScene(0);
     }
 

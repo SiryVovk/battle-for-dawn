@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,8 @@ public class MoveToUnit : MonoBehaviour
     private List<GameObject> createdObjects = new List<GameObject>();
 
     [SerializeField] private GameObject attackLightPrefab;
+
+    public static Action<GameObject, bool> isWalking; 
 
     private void Awake()
     {
@@ -144,6 +147,8 @@ public class MoveToUnit : MonoBehaviour
         {
             current = path[i];
             endPoint = new Vector3(current.xPos, map[current.xPos, current.zPos].YPos, current.zPos);
+            unitComponent.MoveDirection = ChoseMoveDirection(startPoint,endPoint);
+            isWalking.Invoke(unit, true);
             float elapsedTime = 0f;
             while (elapsedTime < unitComponent.UnitSpeed)
             {
@@ -156,8 +161,23 @@ public class MoveToUnit : MonoBehaviour
             startPoint = endPoint;
         }
 
+        isWalking.Invoke(unit, false);
         unit.transform.position = startPoint;
         click.ClearLightAndPath();
         click.OnMouseUp();
+    }
+
+    private MoveDirection ChoseMoveDirection(Vector3 start, Vector3 end)
+    {
+        if(start.x > end.x)
+            return MoveDirection.Left;
+        if(start.x < end.x)
+            return MoveDirection.Right;
+        if (start.z > end.z)
+            return MoveDirection.Down;
+        if (start.z < end.z)
+            return MoveDirection.Up;
+
+        return unitComponent.MoveDirection;
     }
 }
